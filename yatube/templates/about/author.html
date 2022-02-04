@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+  {% load static %}
+  {% block title %}
+    Об авторе
+  {% endblock title %}
+  {% block content %}
+    <div class="row" style = "margin-bottom: 25px">
+      <h1 align="center">Об авторе</h1>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-3" style = "text-align: center" >
+          <img src="{% static "img/photo.jpg" %}"  width=70% heigth=auto>
+          <p> Рогозов Михаил Владимирович </p>
+        </div>
+        <div class="col-sm">
+          <ul>
+            <li>
+              Закончил в 2007г БГТУ "Военмех" по специальности "Средства радиоэлектронной борьбы".
+            </li>
+            <li>
+              В настоящее время работает специалистом по автоматизированным системам управления 
+              технологическими процессами.
+            </li>
+            <li>
+              В ноябре 2021г начал проходить курс по бэкенд разработке на Яндекс Практикум.
+            </li>
+            <li>
+              <a href='https://github.com/mvrogozov'>Ссылка на гитхаб</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  {% endblock %}
+

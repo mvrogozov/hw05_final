@@ -139,7 +139,7 @@ class PostEditView(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         form.save()
-        return redirect('posts:profile', self.request.user)
+        return redirect('posts:post_detail', self.kwargs['post_id'])
 
     def get_context_data(self, **kwargs):
         context = super(PostEditView, self).get_context_data(**kwargs)
@@ -188,6 +188,8 @@ class ProfileFollowView(LoginRequiredMixin, UpdateView):
 
     def get(self, *args, **kwargs):
         selected_author = User.objects.get(username=self.kwargs['username'])
+        if selected_author == self.request.user:
+            return redirect('/')    
         obj, created = Follow.objects.get_or_create(user=self.request.user)
         obj.author.add(selected_author)
         return redirect('/')

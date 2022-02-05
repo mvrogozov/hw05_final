@@ -65,7 +65,7 @@ class Comment(CreatedModel):
         on_delete=models.CASCADE,
         help_text='Автор'
     )
-    text = models.CharField(
+    text = models.TextField(
         'Текст комментария',
         max_length=1000,
         help_text='Текст комментария'
@@ -83,7 +83,7 @@ class Follow(models.Model):
         User,
         related_name='follower',
         verbose_name='Подписчик',
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         help_text='Подписчик',
         null=True
     )

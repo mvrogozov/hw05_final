@@ -189,7 +189,7 @@ class ProfileFollowView(LoginRequiredMixin, UpdateView):
     def get(self, *args, **kwargs):
         selected_author = User.objects.get(username=self.kwargs['username'])
         if selected_author == self.request.user:
-            return redirect('/')    
+            return redirect('/')
         obj, created = Follow.objects.get_or_create(user=self.request.user)
         obj.author.add(selected_author)
         return redirect('/')

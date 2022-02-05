@@ -183,6 +183,28 @@ class PostPagesTests(TestCase):
         )
         )
         follow_after = Follow.objects.get(user=self.user)
+
+
+
+        user2 = User.objects.create_user(username='user4343')
+        self.authorized_client.get(reverse(
+            'posts:profile_follow',
+            kwargs={'username': user2.username}
+        )
+        )
+        user3 = User.objects.create_user(username='user4s343')
+        self.authorized_client.get(reverse(
+            'posts:profile_follow',
+            kwargs={'username': user3.username}
+        )
+        )
+        follow_after = Follow.objects.get(user=self.user)
+        print(follow_after.author.all())
+        print(follow_after.author.count())
+        print('aaaaa', self.user.follower.count())
+
+
+
         self.assertTrue(self.user_to_follow in follow_after.author.all())
         # unfollow
         self.authorized_client.get(reverse(

@@ -58,7 +58,7 @@ class PostURLTests(TestCase):
         redirect_url_names = {
             f'/posts/{self.post.id}/edit/':
             f'/auth/login/?next=/posts/{self.post.id}/edit/',
-            '/create/': f'/auth/login/?next=/create/'
+            '/create/': '/auth/login/?next=/create/'
         }
         for address, redir_address in redirect_url_names.items():
             with self.subTest(address=address):

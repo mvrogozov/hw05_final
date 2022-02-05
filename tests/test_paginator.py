@@ -46,6 +46,7 @@ class TestGroupPaginatorView:
         )
 
     def test_profile_paginator_view(self, client, few_posts_with_group):
+        print('\n\n\n\n\n\n\naaaaa',few_posts_with_group.author.username,'\n\n\n\n\n\n')
         response = client.get(f'/profile/{few_posts_with_group.author.username}/')
         assert isinstance(response.context['page_obj'].paginator, Paginator), (
             'Проверьте, что переменная `paginator` объекта `page_obj`'

@@ -64,11 +64,14 @@ class ProfileView(ListView):
     def get_context_data(self, **kwargs):
         context = super(ProfileView, self).get_context_data(**kwargs)
         self.user = get_object_or_404(User, username=self.kwargs['username'])
-        if Follow.objects.filter(
-            user=self.request.user, author=self.user
-        ).exists():
-            following = True
-        else:
+        following = False
+        if self.request.user.is_authenticated:
+            if Follow.objects.filter(
+                user=self.request.user, author=self.user
+            ).exists():
+                following = True
+            else:
+                following = False
             following = False
         title = 'Профайл пользователя ' + self.kwargs['username']
         context.update({
@@ -190,8 +193,9 @@ class ProfileFollowView(LoginRequiredMixin, UpdateView):
         selected_author = User.objects.get(username=self.kwargs['username'])
         if selected_author == self.request.user:
             return redirect('/')
-        obj, created = Follow.objects.get_or_create(user=self.request.user)
-        obj.author.add(selected_author)
+        obj, created = Follow.objects.get_or_create(
+            user=self.request.user, author=selected_author
+        )
         return redirect('/')
 
 
@@ -200,6 +204,9 @@ class ProfileUnfollowView(LoginRequiredMixin, UpdateView):
 
     def get(self, *args, **kwargs):
         selected_author = User.objects.get(username=self.kwargs['username'])
-        obj = get_object_or_404(Follow, user=self.request.user)
-        obj.author.remove(selected_author)
+        obj = Follow.objects.filter(
+            user=self.request.user, author=selected_author
+        )
+        if obj.exists():
+            obj.delete()
         return redirect('/')

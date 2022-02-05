@@ -87,9 +87,11 @@ class Follow(models.Model):
         help_text='Подписчик',
         null=True
     )
-    author = models.ManyToManyField(
+    author = models.ForeignKey(# ManyToManyField(
         User,
         related_name='following',
         verbose_name='Подписан на',
         help_text='Подписан на',
+        on_delete=models.CASCADE,
+        null=True
     )

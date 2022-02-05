@@ -174,24 +174,30 @@ class PostPagesTests(TestCase):
 
     def test_authorized_user_can_follow_unfollow(self):
         """Authorized user allow to follow and unfollow"""
-        follow_before, created = Follow.objects.get_or_create(user=self.user)
-        self.assertFalse(self.user_to_follow in follow_before.author.all())
+        follow_before = Follow.objects.filter(
+            user=self.user, author=self.user_to_follow
+        )
+        self.assertFalse(follow_before.exists())
         # follow
         self.authorized_client.get(reverse(
             'posts:profile_follow',
             kwargs={'username': self.user_to_follow.username}
         )
         )
-        follow_after = Follow.objects.get(user=self.user)
-        self.assertTrue(self.user_to_follow in follow_after.author.all())
+        follow_after = Follow.objects.filter(
+            user=self.user, author=self.user_to_follow
+        )
+        self.assertTrue(follow_after.exists)
         # unfollow
         self.authorized_client.get(reverse(
             'posts:profile_unfollow',
             kwargs={'username': self.user_to_follow.username}
         )
         )
-        unfollow_after = Follow.objects.get(user=self.user)
-        self.assertFalse(self.user_to_follow in unfollow_after.author.all())
+        unfollow_after = Follow.objects.filter(
+            user=self.user, author=self.user_to_follow
+        )
+        self.assertFalse(unfollow_after.exists())
 
     def test_new_post_in_follower_list_only(self):
         """New post presents in follower list only"""

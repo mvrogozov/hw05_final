@@ -1,5 +1,5 @@
 from http import HTTPStatus
-import time
+
 from django.core.cache import cache
 from django.test import Client, TestCase
 
@@ -33,7 +33,6 @@ class PostURLTests(TestCase):
             f'/posts/{cls.post.id}/': 'posts/post_detail.html',
             f'/posts/{cls.post.id}/edit/': 'posts/create_post.html',
             '/create/': 'posts/create_post.html',
-            
         }
 
     def setUp(self) -> None:

@@ -3,7 +3,7 @@ from django.test import Client, TestCase
 from django.urls import reverse
 
 from posts.forms import PostForm
-from posts.models import Group, Post, User
+from posts.models import Follow, Group, Post, User
 
 
 class PostPagesTests(TestCase):
@@ -11,6 +11,7 @@ class PostPagesTests(TestCase):
     def setUpClass(cls) -> None:
         super().setUpClass()
         cls.user = User.objects.create_user(username='auth')
+        cls.user_to_follow = User.objects.create_user(username='followme')
         cls.group = Group.objects.create(
             title='test group',
             slug='test_slug'
@@ -23,7 +24,6 @@ class PostPagesTests(TestCase):
             text='text1',
             author=cls.user,
             group=cls.group
-
         )
         cls.page_objects = Post.objects.all()
         cls.PAGES_CONTEXT = {
@@ -171,6 +171,56 @@ class PostPagesTests(TestCase):
         )
         )
         self.assertEqual(len(response.context['page_obj']), 0)
+
+    def test_authorized_user_can_follow_unfollow(self):
+        """Authorized user allow to follow and unfollow"""
+        follow_before, created = Follow.objects.get_or_create(user=self.user)
+        self.assertFalse(self.user_to_follow in follow_before.author.all())
+        # follow
+        self.authorized_client.get(reverse(
+            'posts:profile_follow',
+            kwargs={'username': self.user_to_follow.username}
+        )
+        )
+        follow_after = Follow.objects.get(user=self.user)
+        self.assertTrue(self.user_to_follow in follow_after.author.all())
+        # unfollow
+        self.authorized_client.get(reverse(
+            'posts:profile_unfollow',
+            kwargs={'username': self.user_to_follow.username}
+        )
+        )
+        unfollow_after = Follow.objects.get(user=self.user)
+        self.assertFalse(self.user_to_follow in unfollow_after.author.all())
+
+    def test_new_post_in_follower_list_only(self):
+        """New post presents in follower list only"""
+        alone_user = User.objects.create_user(username='alone')
+        follow_post = Post.objects.create(
+            text='follow text',
+            author=self.user_to_follow,
+        )
+        self.authorized_client.get(reverse(
+            'posts:profile_follow',
+            kwargs={'username': self.user_to_follow.username}
+        )
+        )
+        response = self.authorized_client.get(reverse(
+            'posts:follow_index',
+        )
+        )
+        post = response.context.get('object_list')
+        self.assertTrue(follow_post in post)
+
+        # not follower list
+        alone_client = Client()
+        alone_client.force_login(user=alone_user)
+        response = alone_client.get(reverse(
+            'posts:follow_index',
+        )
+        )
+        post = response.context.get('object_list')
+        self.assertFalse(follow_post in post)
 
 
 class PaginatorViewsTest(TestCase):

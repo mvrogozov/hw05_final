@@ -1,11 +1,11 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import CreateView, ListView, UpdateView
-from django.conf import settings
 
-from .forms import PostForm, CommentForm
-from .models import Follow, Group, Post, Comment
+from .forms import CommentForm, PostForm
+from .models import Comment, Follow, Group, Post
 
 User = get_user_model()
 
@@ -51,7 +51,7 @@ class GroupView(ListView):
 class ProfileView(ListView):
     template_name = 'posts/profile.html'
     paginate_by = settings.POSTS_AMOUNT
-    
+
     def get_queryset(self):
         self.user = get_object_or_404(User, username=self.kwargs['username'])
         self.posts_list = Post.objects.select_related(
@@ -169,11 +169,16 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
 class FollowIndexView(LoginRequiredMixin, ListView):
     template_name = 'posts/follow.html'
     model = Post
+    paginate_by = settings.POSTS_AMOUNT
 
     def get_queryset(self):
-        authors_list = Follow.objects.filter(user=self.request.user).values_list('author')
+        authors_list = Follow.objects.filter(
+            user=self.request.user
+        ).values_list('author')
         authors_id_list = [a[0] for a in authors_list]
-        posts_list = Post.objects.select_related('author').filter(author__in=authors_id_list)
+        posts_list = Post.objects.select_related(
+            'author'
+        ).filter(author__in=authors_id_list)
         return posts_list
 
 

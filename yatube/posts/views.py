@@ -66,12 +66,9 @@ class ProfileView(ListView):
         self.user = get_object_or_404(User, username=self.kwargs['username'])
         following = False
         if self.request.user.is_authenticated:
-            if Follow.objects.filter(
+            following = Follow.objects.filter(
                 user=self.request.user, author=self.user
-            ).exists():
-                following = True
-            else:
-                following = False
+            ).exists()
         title = 'Профайл пользователя ' + self.kwargs['username']
         context.update({
             'title': title,
@@ -174,9 +171,7 @@ class FollowIndexView(LoginRequiredMixin, ListView):
     paginate_by = settings.POSTS_AMOUNT
 
     def get_queryset(self):
-        authors_list = Follow.objects.filter(
-            user=self.request.user
-        ).values_list('author')
+        authors_list = self.request.user.follower.all().values_list('author')
         authors_id_list = [a[0] for a in authors_list]
         posts_list = Post.objects.select_related(
             'author'
@@ -192,10 +187,10 @@ class ProfileFollowView(LoginRequiredMixin, UpdateView):
         selected_author = User.objects.get(username=self.kwargs['username'])
         if selected_author == self.request.user:
             return redirect('/')
-        obj, created = Follow.objects.get_or_create(
+        Follow.objects.get_or_create(
             user=self.request.user, author=selected_author
         )
-        return redirect('/')
+        return redirect('posts:index')
 
 
 class ProfileUnfollowView(LoginRequiredMixin, UpdateView):
@@ -208,4 +203,4 @@ class ProfileUnfollowView(LoginRequiredMixin, UpdateView):
         )
         if obj.exists():
             obj.delete()
-        return redirect('/')
+        return redirect('posts:index')

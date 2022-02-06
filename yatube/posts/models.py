@@ -95,3 +95,4 @@ class Follow(models.Model):
         on_delete=models.CASCADE,
         null=True
     )
+    models.UniqueConstraint(fields=['user', 'author'], name='unique follow')

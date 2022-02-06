@@ -6,7 +6,9 @@
     {{ title }}
   {% endblock title %}
   {% block content %}
-  {% include 'posts/includes/switcher.html'%}
+  {% with index=False follow=True %}
+    {% include 'posts/includes/switcher.html'%}
+  {% endwith %}
     <main> 
       <div class="container py-5">     
         <h1>Посты из подписок</h1>

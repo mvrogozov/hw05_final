@@ -25,12 +25,9 @@
           {% endif %}
             <form method="post" action="{% url 'users:signup' %}">
               {% csrf_token %}
-              
-             
                 {% with form=form field=field button_text='Зарегистрироваться' %}
                   {% include 'users/includes/form.html' %} 
                 {% endwith %}
-              
             </form>
           </div>
         </div>

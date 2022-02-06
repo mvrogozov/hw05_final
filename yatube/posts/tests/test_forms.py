@@ -165,7 +165,7 @@ class PostCreateFormTest(TestCase):
         form_data = {
             'text': 'Test comment',
         }
-        response = self.authorized_client.post(
+        self.authorized_client.post(
             reverse(
                 'posts:add_comment',
                 kwargs={'post_id': self.post.id}
@@ -174,10 +174,12 @@ class PostCreateFormTest(TestCase):
             follow=True
         )
         self.assertEqual(Comment.objects.count(), comments_count + 1)
+        last_comment = Comment.objects.all().order_by('-id')[0]
         self.assertEqual(
-            response.context['object_list'][0].text,
+            last_comment.text,
             form_data['text']
         )
+        self.assertEqual(last_comment.post.id, self.post.id)
 
     def test_guest_comment(self):
         """Test guest create comment"""

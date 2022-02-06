@@ -172,8 +172,8 @@ class PostPagesTests(TestCase):
         )
         self.assertEqual(len(response.context['page_obj']), 0)
 
-    def test_authorized_user_can_follow_unfollow(self):
-        """Authorized user allow to follow and unfollow"""
+    def test_authorized_user_can_follow(self):
+        """Authorized user allow to follow"""
         follow_before = Follow.objects.filter(
             user=self.user, author=self.user_to_follow
         )
@@ -188,7 +188,18 @@ class PostPagesTests(TestCase):
             user=self.user, author=self.user_to_follow
         )
         self.assertTrue(follow_after.exists)
-        # unfollow
+
+    def test_authorized_user_can_unfollow(self):
+        """Authorized user allow to unfollow"""
+        Follow.objects.create(
+            user=self.user,
+            author=self.user_to_follow
+        )
+        follow_before = Follow.objects.filter(
+            user=self.user,
+            author=self.user_to_follow
+        )
+        self.assertTrue(follow_before.exists())
         self.authorized_client.get(reverse(
             'posts:profile_unfollow',
             kwargs={'username': self.user_to_follow.username}

@@ -87,7 +87,7 @@ class Follow(models.Model):
         help_text='Подписчик',
         null=True
     )
-    author = models.ForeignKey(# ManyToManyField(
+    author = models.ForeignKey(
         User,
         related_name='following',
         verbose_name='Подписан на',

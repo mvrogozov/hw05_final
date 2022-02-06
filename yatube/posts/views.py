@@ -72,7 +72,6 @@ class ProfileView(ListView):
                 following = True
             else:
                 following = False
-            following = False
         title = 'Профайл пользователя ' + self.kwargs['username']
         context.update({
             'title': title,

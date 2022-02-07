@@ -95,4 +95,14 @@ class Follow(models.Model):
         on_delete=models.CASCADE,
         null=True
     )
-    models.UniqueConstraint(fields=['user', 'author'], name='unique follow')
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'author'],
+                name='unique follow'
+            )
+        ]
+
+    def __str__(self):
+        return f'{self.user.username} - {self.author.username}'

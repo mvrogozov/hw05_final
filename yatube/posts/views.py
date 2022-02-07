@@ -171,11 +171,9 @@ class FollowIndexView(LoginRequiredMixin, ListView):
     paginate_by = settings.POSTS_AMOUNT
 
     def get_queryset(self):
-        authors_list = self.request.user.follower.all().values_list('author')
-        authors_id_list = [a[0] for a in authors_list]
-        posts_list = Post.objects.select_related(
-            'author'
-        ).filter(author__in=authors_id_list)
+        posts_list = Post.objects.filter(
+            author__following__user=self.request.user
+        )
         return posts_list
 
 
@@ -186,7 +184,7 @@ class ProfileFollowView(LoginRequiredMixin, UpdateView):
     def get(self, *args, **kwargs):
         selected_author = User.objects.get(username=self.kwargs['username'])
         if selected_author == self.request.user:
-            return redirect('/')
+            return redirect('posts:index')
         Follow.objects.get_or_create(
             user=self.request.user, author=selected_author
         )

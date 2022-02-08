@@ -11,7 +11,7 @@
     <main> 
       <div class="container py-5">     
         <h1>Последние обновления на сайте</h1>
-        {% cache 2 index_page %}
+        {% cache 20 index_page %}
         {% for post in object_list %}
           {% with form=form field=field button_text='Сменить пароль' %}
             {% include 'posts/includes/post_list.html' %} 
@@ -23,9 +23,7 @@
         {% endcache %}
         
           {% include 'posts/includes/paginator.html' %}
-        
       </div>  
     </main>
-  
   {% endblock content %}
 

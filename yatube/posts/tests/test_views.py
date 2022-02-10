@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.cache import cache
 from django.test import Client, TestCase
 from django.urls import reverse
 
@@ -97,6 +98,7 @@ class PostPagesTests(TestCase):
     def setUp(self) -> None:
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
+        cache.clear()
 
     def test_pages_uses_correct_template(self):
         """Post pages uses correct template"""
@@ -110,6 +112,7 @@ class PostPagesTests(TestCase):
         for address in self.PAGES_CONTEXT.keys():
             for value, expected in self.PAGES_CONTEXT[address].items():
                 with self.subTest(value=self.PAGES_CONTEXT[address]):
+                    cache.clear()
                     response = self.authorized_client.get(address)
                     if value == 'page_obj':
                         elem = response.context.get(value)[0]
@@ -309,6 +312,7 @@ class PaginatorViewsTest(TestCase):
                 author=self.user,
                 group=self.group
             )
+        cache.clear()        
 
     def test_first_page_contains_ten_records(self):
         """Test 10 records on 1st page"""

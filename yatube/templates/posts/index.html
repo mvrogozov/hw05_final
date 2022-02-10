@@ -5,13 +5,12 @@
     {{ title }}
   {% endblock title %}
   {% block content %}
-  {% with index=True follow=False%}
-    {% include 'posts/includes/switcher.html'%}
-  {% endwith %}
     <main> 
       <div class="container py-5">     
+        {% with index=True follow=False%}
+          {% include 'posts/includes/switcher.html'%}
+        {% endwith %}
         <h1>Последние обновления на сайте</h1>
-        {% cache 20 index_page %}
         {% for post in object_list %}
           {% with form=form field=field button_text='Сменить пароль' %}
             {% include 'posts/includes/post_list.html' %} 
@@ -20,8 +19,6 @@
             <hr>
           {% endif %}
         {% endfor %}
-        {% endcache %}
-        
           {% include 'posts/includes/paginator.html' %}
       </div>  
     </main>

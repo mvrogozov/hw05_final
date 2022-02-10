@@ -1,3 +1,4 @@
+from filecmp import clear_cache
 from http import HTTPStatus
 
 from django.core.cache import cache
@@ -38,6 +39,7 @@ class PostURLTests(TestCase):
     def setUp(self) -> None:
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
+        cache.clear()
 
     def test_urls_ok(self):
         """Test urls is OK"""

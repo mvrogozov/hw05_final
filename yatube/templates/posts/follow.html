@@ -1,16 +1,15 @@
 {% extends 'base.html' %}
   {% load cache %}
-  
   {% load thumbnail %}
   {% block title %}
     {{ title }}
   {% endblock title %}
   {% block content %}
-  {% with index=False follow=True %}
-    {% include 'posts/includes/switcher.html'%}
-  {% endwith %}
     <main> 
-      <div class="container py-5">     
+      <div class="container py-5">    
+        {% with index=False follow=True %}
+          {% include 'posts/includes/switcher.html'%}
+        {% endwith %} 
         <h1>Посты из подписок</h1>
         {% cache 2 follow_page %}
         {% for post in object_list %}

@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.urls import path
+from django.views.decorators.cache import cache_page
 
 from . import views
 
@@ -8,7 +9,7 @@ app_name = 'posts'
 urlpatterns = [
     path(
         '',
-        views.IndexView.as_view(),
+        cache_page(20)(views.IndexView.as_view()),
         name='index'
     ),
 

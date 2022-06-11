@@ -12,9 +12,7 @@
         {% endwith %}
         <h1>Последние обновления на сайте</h1>
         {% for post in object_list %}
-          {% with form=form field=field button_text='Сменить пароль' %}
             {% include 'posts/includes/post_list.html' %} 
-          {% endwith %}
           {% if not forloop.last %}        
             <hr>
           {% endif %}
